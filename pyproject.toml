@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trip-scout"
+version = "0.1.0"
+description = "Scheduled flight and accommodation discovery with Resend alerts"
+requires-python = ">=3.11"
+dependencies = ["requests>=2.32,<3", "tzdata>=2025.1", "python-dotenv>=1,<2", "filelock>=3.16,<4", "beautifulsoup4>=4.12,<5", "pyairbnb==2.2.2", "cryptography>=44,<47"]
+license = "MIT"
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+trip-scout = "trip_scout.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

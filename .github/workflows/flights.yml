@@ -1,0 +1,90 @@
+name: Trip Scout alerts
+
+on:
+  schedule:
+    # Once daily: 07:17 in summer Rome time, 06:17 in winter (05:17 UTC).
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Preview deals without sending email or updating alert history
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trip-scout-alerts
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    environment: base
+    # Run trusted code and persist encrypted state on the default branch.
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install
+        run: python -m pip install -e '.[test]'
+      - name: Test
+        run: python -m pytest -q
+      - name: Restore private state
+        id: restore
+        env:
+          STATE_ENCRYPTION_KEY: ${{ secrets.STATE_ENCRYPTION_KEY }}
+        run: |
+          python scripts/check_installation.py
+          python -m trip_scout.storage unpack state runtime/state.enc data
+      - name: Scan and notify
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: ${{ vars.GROQ_MODEL }}
+          ENABLE_LLM_SUMMARY: ${{ vars.ENABLE_LLM_SUMMARY }}
+          ORIGIN_AIRPORTS: ${{ vars.ORIGIN_AIRPORTS }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            python run.py --dry-run --quiet
+          else
+            python run.py --quiet
+          fi
+      - name: Persist usage and alert state, including failed deliveries
+        if: always() && steps.restore.outcome == 'success'
+        env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+          STATE_ENCRYPTION_KEY: ${{ secrets.STATE_ENCRYPTION_KEY }}
+        run: |
+          python -m trip_scout.storage pack state runtime/state.enc data
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add runtime/state.enc
+          git commit -m 'Update encrypted scan state [skip ci]'
+          git pull --rebase origin "${{ github.event.repository.default_branch }}"
+          git push origin "HEAD:${{ github.event.repository.default_branch }}"
+      - name: Encrypt report
+        if: always() && steps.restore.outcome == 'success'
+        env:
+          STATE_ENCRYPTION_KEY: ${{ secrets.STATE_ENCRYPTION_KEY }}
+        run: python -m trip_scout.storage pack report output/report.enc output
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flight-deals-${{ github.run_id }}
+          path: output/report.enc
+          if-no-files-found: ignore
+          retention-days: 14

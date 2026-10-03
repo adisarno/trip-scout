@@ -1,0 +1,10 @@
+{
+  "booking:1": [{"name": "Demo Hostel", "url": "https://www.booking.com/hotel/fr/demo.html", "price": 88, "currency": "EUR", "checkIn": "2030-06-12", "checkOut": "2030-06-16", "roomName": "Bed in 6 Bed Mixed Dorm"}],
+  "booking:2": [{"name": "Demo Guesthouse", "url": "https://www.booking.com/hotel/fr/demo.html", "price": 150, "currency": "EUR", "checkIn": "2030-06-12", "checkOut": "2030-06-16", "roomName": "Double Room"}],
+  "booking:3": [{"name": "Demo Apartment", "url": "https://www.booking.com/hotel/fr/demo.html", "price": 180, "currency": "EUR", "checkIn": "2030-06-12", "checkOut": "2030-06-16", "roomName": "Apartment"}],
+  "airbnb:1": [{"name": "Demo Private Room", "url": "https://www.airbnb.com/rooms/123", "price_amount": 120, "price_qualifier": "total", "currency": "EUR", "check_in": "2030-06-12", "check_out": "2030-06-16", "room_type": "Private room"}],
+  "airbnb:2": [{"name": "Demo Whole Apartment", "url": "https://www.airbnb.com/rooms/123", "price_amount": 155, "price_qualifier": "total", "currency": "EUR", "check_in": "2030-06-12", "check_out": "2030-06-16", "room_type": "Entire home/apt"}],
+  "hostelworld:1": [{"name": "Demo Hostel", "url": "https://www.hostelworld.com/hostels/p/123/demo/", "currency": "EUR", "roomTypes": [{"name": "6 Bed Mixed Dorm", "type": "dorm", "capacity": 6, "price": 18}]}],
+  "hostelworld:2": [{"name": "Demo Hostel", "url": "https://www.hostelworld.com/hostels/p/123/demo/", "currency": "EUR", "roomTypes": [{"name": "6 Bed Mixed Dorm", "type": "dorm", "capacity": 6, "price": 18}]}],
+  "hostelworld:3": [{"name": "Demo Hostel", "url": "https://www.hostelworld.com/hostels/p/123/demo/", "currency": "EUR", "roomTypes": [{"name": "6 Bed Mixed Dorm", "type": "dorm", "capacity": 6, "price": 18}]}]
+}

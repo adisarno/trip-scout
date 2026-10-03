@@ -1,0 +1,54 @@
+{
+  "origins": [
+    "FCO",
+    "CIA",
+    "NAP"
+  ],
+  "destinations": [],
+  "excluded_destinations": [],
+  "currency": "EUR",
+  "min_days_ahead": 7,
+  "max_days_ahead": 365,
+  "flight_provider": "google",
+  "window_days": 30,
+  "max_windows_per_scan": 2,
+  "min_discount_percent": 30,
+  "history_min_days": 7,
+  "min_nights": 2,
+  "max_nights": 5,
+  "max_price": null,
+  "destination_price_limits": {},
+  "min_drop_percent": 10,
+  "max_deals_per_email": 0,
+  "max_pages_per_origin": 5,
+  "accommodation": {
+    "enabled": true,
+    "sources": [
+      "booking",
+      "airbnb",
+      "hostelworld",
+      "google_hotels"
+    ],
+    "party_sizes": [
+      1,
+      2,
+      3
+    ],
+    "max_nightly_price": null,
+    "max_trip_price": null,
+    "include_shared": true,
+    "max_trips_per_scan": 3,
+    "max_results_per_source": 10,
+    "max_options_per_trip": 1,
+    "cache_hours": 24,
+    "max_google_queries_per_scan": 2
+  },
+  "market_countries": [
+    "it",
+    "de"
+  ],
+  "markets_per_window": 1,
+  "serpapi_monthly_limit": 200,
+  "highlighted_deals": 5,
+  "max_schedule_checks_per_scan": 1
+}
